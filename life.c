@@ -5,29 +5,35 @@
 #include <util/delay.h>
 
 #include "display.h"
+#include "random.h"
 #include "life.h"
 
 #define WIDTH  8
 #define HEIGHT 8
 
-uint8_t world[HEIGHT] = {0b00000000,
-         0b00000000,
-         0b00010100,
-         0b00100000,
-         0b00100010,
-         0b00111100,
-         0b00000000,
-         0b00000000};
+uint8_t world[HEIGHT] = 
+{ 0b00000000,
+  0b00000000,
+  0b00010100,
+  0b00100000,
+  0b00100010,
+  0b00111100,
+  0b00000000,
+  0b00000000
+};
 
 /**
  * Initialize Game of Life
  */
 void life_init()
 {
-    /*uint8_t i;
+    uint8_t i;
+    
+    // Random world
+    randomize_seed();
     for (i = 0; i < HEIGHT; i++) {
-        world[i] = 0;
-    }*/
+        world[i] = get_random(0xff);
+    }
     
     // Set up timer
     power_timer1_enable();
