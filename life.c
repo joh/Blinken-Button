@@ -11,6 +11,7 @@
 #define WIDTH  8
 #define HEIGHT 8
 
+/* Our binary world */
 uint8_t world[HEIGHT] = 
 { 0b00000000,
   0b00000000,
@@ -22,18 +23,32 @@ uint8_t world[HEIGHT] =
   0b00000000
 };
 
+/* Empty world counter */
+uint8_t empty_counter = 0;
+
+#define EMPTY_TIMEOUT 10
+
+/**
+ * Randomize world
+ */
+void life_randomize()
+{
+    uint8_t i;
+    
+    // Random world
+    for (i = 0; i < HEIGHT; i++) {
+        world[i] = get_random(0xff);
+    }
+}
+
 /**
  * Initialize Game of Life
  */
 void life_init()
 {
-    uint8_t i;
-    
-    // Random world
+    // Randomize world
     randomize_seed();
-    for (i = 0; i < HEIGHT; i++) {
-        world[i] = get_random(0xff);
-    }
+    life_randomize();
     
     // Set up timer
     power_timer1_enable();
@@ -58,22 +73,38 @@ void life_step()
 {
     uint8_t i, j;
     int8_t x, y, k, l;
-    uint8_t live, dead;
+    uint8_t live;
     uint8_t world0[HEIGHT];
     
     // Show current world
     display_load_sprite(world);
     display_advance_buffer();
     
-    //_delay_ms(100);
+    // If world is empty, randomize
+    if (empty_counter > EMPTY_TIMEOUT) {
+        empty_counter = 0;
+        life_randomize();
+        return;
+    }
+    
+    if (empty_counter > 0) {
+        empty_counter++;
+        return;
+    }
     
     // Copy old world
     memcpy(world0, world, HEIGHT);
     
+    // Set empty counter to 1 in case world is empty
+    empty_counter = 1;
+    
     for (j = 0; j < HEIGHT; j++) {
+        if (world0[j] != 0)
+            // Not empty
+            empty_counter = 0;
+        
         for (i = 0; i < WIDTH; i++) {
             live = 0;
-            dead = 0;
             
             // Check neighbours
             for (k = -1; k <= 1; k++) {
@@ -93,8 +124,6 @@ void life_step()
                     
                     if (world0[y] & (1 << x)) {
                         live++;
-                    } else {
-                        dead++;
                     }
                 }
             }
@@ -112,6 +141,5 @@ void life_step()
             }
         }
     }
-    
 }
 
