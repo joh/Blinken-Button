@@ -133,11 +133,7 @@ main(void)
    */
   for (;;)
     {
-      /*
-       * by state_process we check if a new image has to be loaded and call the load routine
-       */
-      //state_process();
-      life_step();
+      //life_step();
     }
 }
 
