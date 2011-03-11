@@ -92,13 +92,11 @@
 //interrupt routines and names
 #include <avr/interrupt.h>
 
-// state manages the triggering of calculations
-// according to Timer 2
-#include "state.h"
-// animations.c contains all routines for rendering the animations from single images
-#include "rendering.h"
 // display.c is responsible for rendering the images on the display.
 #include "display.h"
+
+// game of life
+#include "life.h"
 
 /*
  * This is the main routine. The main routine gets executed when the ATmega powers up.
@@ -114,9 +112,13 @@ main(void)
    * So here we switch anything of like UART, ADC, timers and so on.
    */
   power_all_disable();
-  //now start the animations
-  animation_init();
-
+  
+  // Initialize display
+  display_init();
+  
+  // Initialize life
+  life_init();
+  
   /*
    * now we have initialized all components and can now switch to reactive mode.
    * We enable all interrupts globally. By that the selected interrupts start
@@ -134,7 +136,8 @@ main(void)
       /*
        * by state_process we check if a new image has to be loaded and call the load routine
        */
-      state_process();
+      //state_process();
+      life_step();
     }
 }
 
@@ -143,7 +146,7 @@ ISR(TIMER0_COMPA_vect )
 {
   display_render_row();
 }
-
+/*
 //timer 1 is used to decide what to display
 ISR (TIMER1_OVF_vect)
 {
@@ -155,3 +158,4 @@ ISR(TIMER2_OVF_vect)
 {
   animation_switch_sprite();
 }
+*/
