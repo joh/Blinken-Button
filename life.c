@@ -13,7 +13,8 @@
 
 /* Our binary world */
 uint8_t world[HEIGHT] = 
-{ 0b00000000,
+{ 
+  0b00000000,
   0b00000000,
   0b00010100,
   0b00100000,
@@ -61,8 +62,15 @@ void life_init()
     //OCR1A = 3124;                       // 10Hz @ 8MHz
 }
 
+/**
+ * Timer1 interrupt service routine
+ */
 ISR (TIMER1_COMPA_vect)
 {
+    // Allow display interrupts
+    sei();
+    
+    // Perform a life step
     life_step();
 }
 
@@ -80,7 +88,11 @@ static uint8_t neighbours(uint8_t *world, uint8_t j, uint8_t i)
             y = (j + k);
             x = (i + l);
             
+            // Boundary
+            if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) continue;
+            
             // Wrap around
+            /*
             if (x < 0)
                 x += WIDTH;
             if (y < 0)
@@ -89,6 +101,7 @@ static uint8_t neighbours(uint8_t *world, uint8_t j, uint8_t i)
                 x -= WIDTH;
             if (y >= HEIGHT)
                 y -= HEIGHT;
+            */
             
             if (world[y] & (1 << x)) {
                 count++;
