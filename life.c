@@ -2,7 +2,6 @@
 #include <avr/io.h>
 #include <avr/power.h>
 #include <avr/interrupt.h>
-#include <util/delay.h>
 
 #include "display.h"
 #include "random.h"
@@ -15,11 +14,11 @@
 uint8_t world[HEIGHT] = 
 { 
   0b00000000,
+  0b00001010,
+  0b00010000,
+  0b00010001,
+  0b00011110,
   0b00000000,
-  0b00010100,
-  0b00100000,
-  0b00100010,
-  0b00111100,
   0b00000000,
   0b00000000
 };
