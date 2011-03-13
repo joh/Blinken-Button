@@ -43,10 +43,6 @@
 //definitions for the flash
 #include <avr/pgmspace.h>
 
-//we are using states to track activity
-#include "state.h"
-//we need some basic definitions for fonts & default sprites
-#include "core-flash-content.h"
 //and we need our own definitions
 #include "display.h"
 
@@ -201,24 +197,6 @@ display_advance_buffer(void)
 {
   //TODO don't we have to obey the display locked?
   display_status |= DISPLAY_BUFFER_ADVANCE;
-}
-
-/*
- * Loads the test pattern.
- */
-void
-display_load_default_sequence(void)
-{
-  uint8_t default_load_buffer[8] =
-    { 0, 0, 0, 0, 0, 0, 0, 0 };
-
-  display_current_buffer = 0;
-  copy_to_buffer(default_sprites[0], default_load_buffer);
-  display_load_sprite(default_load_buffer);
-  display_current_buffer = 1;
-  copy_to_buffer(default_sprites[1], default_load_buffer);
-  display_load_sprite(default_load_buffer);
-  display_current_buffer = 0;
 }
 
 /*
