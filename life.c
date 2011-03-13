@@ -67,13 +67,44 @@ ISR (TIMER1_COMPA_vect)
 }
 
 /**
+ * Count the number of (alive) neighbour cells at row j, col i
+ */
+static uint8_t neighbours(uint8_t *world, uint8_t j, uint8_t i)
+{
+    int8_t k, l, x, y;
+    uint8_t count = 0;
+    
+    for (k = -1; k <= 1; k++) {
+        for (l = -1; l <= 1; l++) {
+            if (k == 0 && l == 0) continue;
+            y = (j + k);
+            x = (i + l);
+            
+            // Wrap around
+            if (x < 0)
+                x += WIDTH;
+            if (y < 0)
+                y += HEIGHT;
+            if (x >= WIDTH)
+                x -= WIDTH;
+            if (y >= HEIGHT)
+                y -= HEIGHT;
+            
+            if (world[y] & (1 << x)) {
+                count++;
+            }
+        }
+    }
+    
+    return count;
+}
+
+/**
  * Perform a Game of Life step
  */
 void life_step()
 {
-    uint8_t i, j;
-    int8_t x, y, k, l;
-    uint8_t live;
+    uint8_t i, j, live;
     uint8_t world0[HEIGHT];
     
     // Show current world
@@ -104,29 +135,8 @@ void life_step()
             empty_counter = 0;
         
         for (i = 0; i < WIDTH; i++) {
-            live = 0;
-            
             // Check neighbours
-            for (k = -1; k <= 1; k++) {
-                for (l = -1; l <= 1; l++) {
-                    if (k == 0 && l == 0) continue;
-                    y = (j + k);
-                    x = (i + l);
-                    
-                    if (x < 0)
-                        x += WIDTH;
-                    if (y < 0)
-                        y += HEIGHT;
-                    if (x >= WIDTH)
-                        x -= WIDTH;
-                    if (y >= HEIGHT)
-                        y -= HEIGHT;
-                    
-                    if (world0[y] & (1 << x)) {
-                        live++;
-                    }
-                }
-            }
+            live = neighbours(world0, j, i);
             
             if (world0[j] & (1 << i)) {
                 // Alive cell
