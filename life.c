@@ -85,11 +85,8 @@ static uint8_t neighbours(uint8_t *world, uint8_t j, uint8_t i)
             y = (j + k);
             x = (i + l);
             
-            // Boundary
-            if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) continue;
-            
+            #if LIFE_WORLD_MODE == LIFE_WORLD_WRAP
             // Wrap around
-            /*
             if (x < 0)
                 x += WIDTH;
             if (y < 0)
@@ -98,7 +95,11 @@ static uint8_t neighbours(uint8_t *world, uint8_t j, uint8_t i)
                 x -= WIDTH;
             if (y >= HEIGHT)
                 y -= HEIGHT;
-            */
+            #else
+            // Boundary
+            if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) continue;
+            #endif
+            
             
             if (world[y] & (1 << x)) {
                 count++;
