@@ -1,6 +1,9 @@
 #ifndef LIFE_H_
 #define LIFE_H_
 
+// Life frequency in Hz
+#define LIFE_FREQ 2
+
 // Reset timeout for static / empty worlds
 #define LIFE_TIMEOUT 10
 

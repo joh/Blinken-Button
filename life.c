@@ -54,8 +54,10 @@ void life_init()
     TCCR1A = 0;
     TCCR1B = _BV(CS12) | _BV(WGM12);    // Prescaler 256, CTC mode
     TIMSK1 = _BV(OCIE1A);               // Interrupt on Output Compare Match A
+    OCR1A = 31249 / LIFE_FREQ;          // Update frequency
+    
     //OCR1A = 31249;                      // 1Hz @ 8MHz
-    OCR1A = 15624;                      // 2Hz @ 8MHz
+    //OCR1A = 15624;                      // 2Hz @ 8MHz
     //OCR1A = 3124;                       // 10Hz @ 8MHz
 }
 
