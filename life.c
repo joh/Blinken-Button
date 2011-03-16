@@ -23,10 +23,8 @@ uint8_t world[HEIGHT] =
   0b00000000
 };
 
-/* Empty world counter */
-uint8_t empty_counter = 0;
-
-#define EMPTY_TIMEOUT 10
+/* World timeout counter */
+uint8_t timeout_counter = 0;
 
 /**
  * Randomize world
@@ -123,29 +121,23 @@ void life_step()
     display_load_sprite(world);
     display_advance_buffer();
     
-    // If world is empty, randomize
-    if (empty_counter > EMPTY_TIMEOUT) {
-        empty_counter = 0;
+    // If world is static / empty, randomize
+    if (timeout_counter > LIFE_TIMEOUT) {
+        timeout_counter = 0;
         life_randomize();
         return;
     }
     
-    if (empty_counter > 0) {
-        empty_counter++;
+    if (timeout_counter > 0) {
+        timeout_counter++;
         return;
     }
     
     // Copy old world
     memcpy(world0, world, HEIGHT);
     
-    // Set empty counter to 1 in case world is empty
-    empty_counter = 1;
-    
+    // Game of Life step
     for (j = 0; j < HEIGHT; j++) {
-        if (world0[j] != 0)
-            // Not empty
-            empty_counter = 0;
-        
         for (i = 0; i < WIDTH; i++) {
             // Check neighbours
             live = neighbours(world0, j, i);
@@ -161,6 +153,16 @@ void life_step()
                     world[j] |= (1 << i);
                 }
             }
+        }
+    }
+    
+    // Detect static / empty configurations
+    timeout_counter = 1;
+    for (j = 0; j < HEIGHT; j++) {
+        if (world0[j] != world[j]) {
+            // Not static
+            timeout_counter = 0;
+            break;
         }
     }
 }
